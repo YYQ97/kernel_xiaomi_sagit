@@ -701,41 +701,6 @@ struct rq {
 	u64 max_idle_balance_cost;
 #endif
 
-<<<<<<< HEAD
-#ifdef CONFIG_SCHED_HMP
-	struct sched_cluster *cluster;
-	struct cpumask freq_domain_cpumask;
-	struct hmp_sched_stats hmp_stats;
-
-	int cstate, wakeup_latency, wakeup_energy;
-	u64 window_start;
-	u64 load_reported_window;
-	unsigned long hmp_flags;
-
-	u64 cur_irqload;
-	u64 avg_irqload;
-	u64 irqload_ts;
-	unsigned int static_cpu_pwr_cost;
-	struct task_struct *ed_task;
-	struct cpu_cycle cc;
-	u64 old_busy_time, old_busy_time_group;
-	u64 old_estimated_time;
-	u64 curr_runnable_sum;
-	u64 prev_runnable_sum;
-	u64 nt_curr_runnable_sum;
-	u64 nt_prev_runnable_sum;
-	struct group_cpu_time grp_time;
-	struct load_subtractions load_subs[NUM_TRACKED_WINDOWS];
-	DECLARE_BITMAP_ARRAY(top_tasks_bitmap,
-			NUM_TRACKED_WINDOWS, NUM_LOAD_INDICES);
-	u8 *top_tasks[NUM_TRACKED_WINDOWS];
-	u8 curr_table;
-	int prev_top;
-	int curr_top;
-#endif
-
-=======
->>>>>>> 74af67b683b0d... Remove HMP for EAS bringup on msm-4.4
 #ifdef CONFIG_SCHED_WALT
 	u64 cumulative_runnable_avg;
 	u64 window_start;

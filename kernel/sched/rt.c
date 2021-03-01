@@ -1827,9 +1827,13 @@ static int find_lowest_rq(struct task_struct *task, int sync)
 	 * At this point we have built a mask of cpus representing the
 	 * lowest priority tasks in the system.
 	 */
-
+#ifdef CONFIG_CGROUP_SCHEDTUNE
 	boosted = schedtune_task_boost(task) > 0;
 	prefer_idle = schedtune_prefer_idle(task) > 0;
+#elif  CONFIG_UCLAMP_TASK
+	boosted = uclamp_boosted(task);
+	prefer_idle = uclamp_latency_sensitive(task);
+#endif
 	if(boosted || prefer_idle) {
 		return find_best_rt_target(task, cpu, lowest_mask, boosted, prefer_idle);
 	} else {
@@ -1855,8 +1859,13 @@ static int find_lowest_rq(struct task_struct *task, int sync)
 					/* Ensuring that boosted/prefer idle
 					 * tasks are not pre-empted even if low
 					 * priority*/
-					if (!curr || (schedtune_task_boost(curr) == 0
+#ifdef CONFIG_CGROUP_SCHEDTUNE 
+					if (!curr || (schedtune_task_boost(curr) == 0  
 					    && schedtune_prefer_idle(curr) == 0)) {
+#elif  CONFIG_UCLAMP_TASK
+					if (!curr || (uclamp_latency_sensitive(curr) == 0  
+					    && uclamp_latency_sensitive(curr) == 0)) {
+#endif
 						rcu_read_unlock();
 						return this_cpu;
 					}
@@ -1869,8 +1878,13 @@ static int find_lowest_rq(struct task_struct *task, int sync)
 					/* Ensuring that boosted/prefer idle
 					 * tasks are not pre-empted even if low
 					 * priority*/
-					if(!curr || (schedtune_task_boost(curr) == 0
-						     && schedtune_prefer_idle(curr) == 0)) {
+#ifdef CONFIG_CGROUP_SCHEDTUNE 
+					if (!curr || (schedtune_task_boost(curr) == 0  
+					    && schedtune_prefer_idle(curr) == 0)) {
+#elif  CONFIG_UCLAMP_TASK
+					if (!curr || (uclamp_latency_sensitive(curr) == 0  
+					    && uclamp_latency_sensitive(curr) == 0)) {
+#endif
 						rcu_read_unlock();
 						return best_cpu;
 					}
